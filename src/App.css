@@ -46,3 +46,115 @@
 .read-the-docs {
 	color: #888;
 }
+
+/* Main container styles */
+.crm-container {
+	font-family: Arial, sans-serif;
+	max-width: 90%;
+	margin: 20px auto;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Filter container styles */
+  .filter-container {
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+  }
+  
+  .filter-row {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+  }
+  
+  .filter-group {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
+  }
+  
+  .filter-group label {
+	font-weight: bold;
+	margin-bottom: 5px;
+  }
+  
+  .name-input, .city-dropdown {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 300px;
+	font-size: 16px;
+  }
+  
+  .highlight-checkbox {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-left: 20px;
+  }
+  
+  .highlight-checkbox label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+  }
+  
+  .highlight-checkbox input {
+	margin-right: 8px;
+	width: 20px;
+	height: 20px;
+  }
+  
+  /* Table styles */
+  .users-table-container {
+	overflow-x: auto;
+  }
+  
+  .users-table {
+	width: 100%;
+	border-collapse: collapse;
+  }
+  
+  .users-table th {
+	padding: 12px 15px;
+	text-align: left;
+	border-bottom: 2px solid #ddd;
+	font-weight: bold;
+  }
+  
+  .users-table td {
+	padding: 12px 15px;
+	border-bottom: 1px solid #ddd;
+  }
+  
+  .users-table tr:hover {
+	background-color: #808080;
+  }
+  
+  /* Highlighted rows for oldest users */
+  .users-table tr.highlighted {
+	background-color: #808080;
+  }
+  
+  .users-table tr.highlighted:hover {
+	background-color: #808080;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+	.filter-row {
+	  flex-direction: column;
+	  align-items: flex-start;
+	}
+	
+	.name-input, .city-dropdown {
+	  width: 100%;
+	}
+	
+	.highlight-checkbox {
+	  margin-left: 0;
+	}
+  }
