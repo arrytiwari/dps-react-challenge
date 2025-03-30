@@ -1,44 +1,123 @@
-# DPS Frontend Coding Challenge
+# CRM Customer Management Application
 
-## Overview
+A React TypeScript application for managing and filtering customer data with a clean, intuitive user interface.
 
-This repository contains a very basic web application based on Typescript and React. Main application file is `App.tsx`. Node and npm are required.
+## Features
 
-## Environment Setup
+- **Customer Data Display**: View customer information in a clean tabular format
+- **Real-time Filtering**:
+  - Search by name (first or last name) with 1-second debounce for optimal performance
+  - Filter by city using a dropdown populated with available cities
+- **Highlight Feature**: Option to highlight the oldest customer in each city
+- **Responsive Design**: Works well on desktop and mobile devices
 
-Ensure you have Node.js (v14.x or later) and npm (v6.x or later) installed.  
-To set up and run the application, execute the following commands:
 
+## Technologies Used
+
+- React
+- TypeScript
+- CSS
+- [DummyJSON API](https://dummyjson.com/) for mock data
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <your-repository-url>
+   cd <repository-folder>
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
+
+## Project Structure
+
+- `src/App.tsx` - Main application component with filtering and display logic
+- `src/App.css` - Styling for the application
+
+## Key Implementation Details
+
+### Custom useDebounce Hook
+
+The application uses a custom hook to implement debouncing for the name filter, optimizing performance by reducing the number of filter operations:
+
+```typescript
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 ```
-npm install
-npm run dev
+
+### Data Fetching
+
+The application fetches user data from the DummyJSON API and extracts unique cities for the dropdown filter:
+
+```typescript
+useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('https://dummyjson.com/users');
+      const data = await response.json();
+      
+      if (data && data.users) {
+        setUsers(data.users);
+        setFilteredUsers(data.users);
+        
+        // Extract unique cities for dropdown
+        const uniqueCities = Array.from(
+          new Set(data.users.map((user: User) => user.address.city))
+        ).sort();
+        
+        setCities(uniqueCities as string[]);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  fetchUsers();
+}, []);
 ```
 
-The application will then be accessible at http://localhost:3000.
+### Determining the Oldest Customer
 
-## Project Context
+The application identifies the oldest customer in each city using birth date comparison:
 
-You will be enhancing a new CRM (Customer Relationship Management) software aimed at managing customer data efficiently. Your task is to develop a feature that displays a searchable list of customers.
+```typescript
+const isOldestInCity = (user: User): boolean => {
+  if (!highlightOldest) return false;
+  
+  const usersInSameCity = users.filter(u => u.address.city === user.address.city);
+  const oldestUser = usersInSameCity.reduce((oldest, current) => {
+    const oldestDate = new Date(oldest.birthDate);
+    const currentDate = new Date(current.birthDate);
+    return oldestDate < currentDate ? oldest : current;
+  }, usersInSameCity[0]);
+  
+  return oldestUser.id === user.id;
+};
+```
 
-Refer to the attached mockup image to guide your UI development 👇
-
-![Mockup](images/mockup.png)
-
-## Challenge Tasks
-
--   **Fork this project:** Start by forking this repository
--   **UI Implementation:** Implement the user interface according to the provided design mockup.
--   **Data Integration:** Utilize the endpoint https://dummyjson.com/users to fetch user data. If no filter is applied all data is displayed.
--   **Client-side Filtering:** Implement the following filters:
-    -   **Name Filter:** An input field that dynamically filters by `firstName` or `lastName` as you type.
-    -   **City Filter:** A dropdown that lists all cities present in the data. Users can select a city to filter the list accordingly.
-    -   **Highlight Feature:** A checkbox that when checked, highlights the oldest users within each city (use data field `city`)
-    -   **Optional:** Implement a 1-second debounce on the Name Filter input. This means the application should delay the filter action until 1 second has passed without any further input from the user. This optimization helps reduce the number of processing calls, enhancing performance.
--   **Submission:** After completing the challenge, email us the URL of your GitHub repository.
--   **Further information:**
-    -   If there is anything unclear regarding requirements, contact us by replying to our email.
-    -   Use small commits, we want to see your progress towards the solution.
-    -   Code clean and follow the best practices.
-
-\
-Happy coding!
